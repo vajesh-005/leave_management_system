@@ -1,0 +1,140 @@
+.form {
+  height: auto;
+  height: 350px;
+  width: auto;
+  min-width: 350px;
+  border: 1.5px solid #26262d;
+  border-radius: 5px;
+}
+.request-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 100%;
+}
+
+.leave-request-title {
+  color: #ad46ff;
+  font-weight: 600;
+  font-size: 20px;
+  margin-left: 20px;
+}
+.dates {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1.5px solid #26262d;
+  margin: 10px;
+  padding: 5px;
+}
+.date {
+  display: flex;
+  flex-direction: column;
+}
+.date label {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #898d93;
+}
+#start-date,
+#end-date {
+  padding: 10px 20px;
+  background-color: transparent;
+  color: #bcc1c9;
+  border: 1.5px solid #26262d;
+  border-radius: 5px;
+  outline: none;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  background-color: #ad46ff;
+  border-radius: 5px;
+  padding: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+#start-date:hover,
+#end-date:hover,
+.reason textarea:hover {
+  border-color: #ad46ff;
+  animation: borderAnimation 0.5s ease-in-out;
+}
+#start-date:focus,
+#end-date:focus {
+  border-color: #ad46ff;
+  margin: 2px;
+}
+@keyframes borderAnimation {
+  0% {
+    border-color: #26262d;
+  }
+  100% {
+    border-color: #ad46ff;
+  }
+}
+.leave-type {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+  gap: 10px;
+  border-bottom: 1.5px solid #26262d;
+  margin: 10px;
+  padding: 5px;
+}
+.dropdown-menu{
+  width: 90%;
+  background-color: #26262d;
+  padding: 10px 20px;
+  border: 1.5px solid #898d93;
+  border-radius: 5px;
+}
+.dropdown-menu:focus{
+  outline: none;
+}
+
+
+.footer {
+  display: flex;
+  width: 100%;
+  /* height: 100%; */
+}
+.reason {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  flex: 3;
+}
+.reason-title {
+  font-size: 15px;
+  font-size: 20px;
+  color: #ad46ff;
+  font-weight: 600;
+}
+.reason-textarea {
+  background-color: transparent;
+  border-radius: 5px;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  width: 90%;
+  outline: none;
+}
+.reason-textarea:focus{
+  border: 2px solid #ad46ff;
+}
+
+.submit-button-div {
+  flex: 2;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  padding-right: 10px;
+}
+.submit-btn{
+  border-radius: 20px;
+  border: 2px solid green;
+}
+
+.submit-button-text {
+  margin: 0;
+  padding: 10px;
+  color: white;
+}

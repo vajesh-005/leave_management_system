@@ -1,0 +1,98 @@
+body{
+    background-color: #020203;
+
+    font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+.title{
+    font-size: 20px;
+    color: #AD46FF;
+    font-weight: 600;
+    margin-left: 25px;
+}
+.pending-section{
+    width: auto;
+    min-width: 350px;
+    max-width: 350px;
+    max-height: 434px;
+    overflow-y: scroll;
+    background-color: #020203;
+    color: white;
+    border: 1.5px solid #26262D;
+    border-radius: 5px;
+
+    
+}
+.pending-section::-webkit-scrollbar{
+    width: 5px;
+    height: 5px;
+}
+.pending-section::-webkit-scrollbar-track{
+    background-color: #020203;
+    margin: 10px;
+}
+.pending-section::-webkit-scrollbar-thumb{
+    background-color: #AD46FF;
+    border-radius: 5px;
+}
+.pending-request-card{
+    border-bottom: 1px solid #26262D;
+    padding: 10px;
+    margin: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.leave-type-and-status{
+    width: 100%;
+    display: flex  ;
+    justify-content: space-between;
+}
+.date-and-days{
+    display: flex;
+    justify-content: space-between;
+}
+.leave-name{
+    color: #AD46FF;
+}
+.pending{
+    background-color: #27200F;
+    border-radius: 15px 15px ;
+    padding: 5px;
+    font-size: small;
+    color: #FFB900;
+    font-weight: 500;
+}
+.approved{
+    background-color: #0D201B;
+    border-radius: 15px 15px ;
+    padding: 5px;
+    font-size: small;
+    color: #00D492;
+    font-weight: 500;
+}
+.rejected{
+    background-color: #261114;
+    border-radius: 15px 15px ;
+    padding: 5px;
+    font-size: small;
+    color: #F66164;
+    font-weight: 500;
+}
+.cancelled{
+    background-color: #202023;
+    border-radius: 15px 15px ;
+    padding: 5px;
+    font-size: small;
+    color: #F4F4F4;
+    font-weight: 500;
+}
+.date{
+    font-size: 12px;
+    color: #bcc1c9;
+    font-family:'Courier New', Courier, monospace;
+}
+.date-difference{
+    font-size: 10px;
+    margin-top: 7px;
+    color:  #63686F;
+}
