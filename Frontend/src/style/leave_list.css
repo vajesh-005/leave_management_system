@@ -1,0 +1,46 @@
+.leave-list-container {
+  /* width: 1200px; */
+  /* height: 100vh; */
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 100%;
+  gap: 10px;
+}
+.side-bar-div {
+  width: 20%;
+  height: 100%;
+}
+.main-container {
+  width: 80%;
+  height: 90%;
+  overflow-y: scroll;
+  gap: 18px;
+}
+.main-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.main-container::-webkit-scrollbar-track {
+  background: #252323;
+  border-radius: 6px;
+}
+
+.main-container::-webkit-scrollbar-thumb {
+  background-color: #ad46ff;
+  border-radius: 6px;
+}
+
+.main-container::-webkit-scrollbar-thumb:hover {
+  background: #8d26e2;
+}
+
+.rules-div {
+  height: auto;
+  width: 100%;
+  color: #c8c5c5;
+}
+.rules {
+  width: 80%;
+}

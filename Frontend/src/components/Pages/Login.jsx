@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../style/login.css";
+import "../../style/login.css";
 import { useToaster, Message, Button } from "rsuite";
-import Background from '../assets/Background_edited.jpg'
-import {jwtDecode} from 'jwt-decode'; 
+import Background from "../../assets/Background_edited.jpg";
+import { jwtDecode } from "jwt-decode";
 function Login() {
   const navigate = useNavigate();
 
@@ -22,12 +22,9 @@ function Login() {
     }));
   };
   const isFormValid = () => {
-    return (
-      formData.email.trim() !== "" &&
-      formData.password.trim() !== ""
-    );
+    return formData.email.trim() !== "" && formData.password.trim() !== "";
   };
-  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -60,16 +57,17 @@ function Login() {
         const data = await response.json();
         const token = data.token;
 
-        localStorage.setItem('token',token);
-
+        localStorage.setItem("token", token);
 
         const decode = jwtDecode(token);
-        const {role} = decode
+        const { role } = decode;
         setTimeout(() => {
-          if(role =='HR'){
-            navigate('/Dashboard/HR');
+          if (role == "HR") {
+            navigate("/hr_dashboard");
+          } else if (role == "Director") {
+            navigate("/director_dashboard");
           } else {
-            navigate('/dashboard');
+            navigate("/dashboard");
           }
         }, 3000);
         setFormData({
@@ -98,7 +96,10 @@ function Login() {
     }
   };
   return (
-    <div className="login-form" style={{backgroundImage: `url(${Background})`}}>
+    <div
+      className="login-form"
+      style={{ backgroundImage: `url(${Background})` }}
+    >
       <form method="POST" onSubmit={handleSubmit} className="login-form-div">
         <p className="login-title">LOGIN</p>
         <div className="email">

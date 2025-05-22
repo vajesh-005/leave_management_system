@@ -7,11 +7,10 @@ import App from "./App";
 import "rsuite/dist/rsuite.min.css";
 
 createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+
     <BrowserRouter>
       <CustomProvider theme="light">
         <App />
       </CustomProvider>
     </BrowserRouter>
-  </React.StrictMode>
 );

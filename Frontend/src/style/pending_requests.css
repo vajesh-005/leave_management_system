@@ -8,6 +8,7 @@ body{
     color: #AD46FF;
     font-weight: 600;
     margin-left: 25px;
+    margin-top: 25px;
 }
 .pending-section{
     width: auto;
@@ -52,7 +53,21 @@ body{
     justify-content: space-between;
 }
 .leave-name{
+    font-size: 15px;
     color: #AD46FF;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+}
+.cancel-btn{
+    font-size: 8px;
+    color: white;
+    background-color: #E7000B;
+    border-radius: 5px;
+}
+.cancel-btn:hover{
+    background-color: #661216;
 }
 .pending{
     background-color: #27200F;

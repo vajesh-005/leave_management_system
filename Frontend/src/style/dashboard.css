@@ -1,0 +1,50 @@
+#root {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.container {
+  /* width: 1200px; */
+  margin-top: 10px;
+  /* height: 100vh; */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 10px;
+}
+.sidebar{
+    width: 20%;
+}
+.grid {
+  height: 90%;
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.main {
+  display: flex;
+  gap: 10px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.greeting {
+  display: flex;
+  align-items: baseline;
+  gap: px;
+}
+.welcome {
+  color: #ad46ff;
+  font-size: 30px;
+  font-weight: 500;
+}
+.name {
+  font-size: 30px;
+  color: white;
+}
+
+

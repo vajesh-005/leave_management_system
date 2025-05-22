@@ -5,7 +5,7 @@ exports.verifyToken = async (request, h) => {
 
   if (!authHeader || !authHeader.startsWith("Bearer "))
     return h.response("Missing or invalid token ").code(401).takeover();
-
+//check condition !!!
   try {
     const token = authHeader.split(" ")[1];
     console.log("printed from verification", token);

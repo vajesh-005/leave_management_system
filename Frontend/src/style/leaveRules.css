@@ -1,0 +1,22 @@
+.leave-rules {
+    max-width: 800px;
+    margin: 10px auto;
+    padding: 20px;
+    line-height: 1.6;
+    border: 1.5px solid #333;
+    border-radius: 5px;
+  }
+  
+  .leave-rules h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .leave-rules ul {
+    margin-left: 20px;
+  }
+  
+  .leave-rules strong {
+    color:#ad46ff ;
+  }
+  

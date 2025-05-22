@@ -8,9 +8,9 @@
   cursor:not-allowed;
 }
 .sidebar {
-  width: 130px;
+  width: 180px;
   height: 90%;
-  background-color: #26262d;
+  background-color: #1c1c20;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
@@ -39,10 +39,14 @@
     text-decoration: none;
 }
 .item:hover{
-    background-color: #3a3a42;
+    background-color: #424245;
     cursor: pointer;
     text-decoration: none;
     color: #AD46FF;
+}
+.item:focus{
+  text-decoration: none;
+  color: #AD46FF;
 }
 .dashboard-icon{
     color: red;
@@ -71,4 +75,5 @@
 }
 .active{
   border-left: 4px solid #AD46FF;
+  color: #AD46FF;
 }

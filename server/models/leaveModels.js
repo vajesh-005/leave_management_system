@@ -95,65 +95,91 @@ exports.putLeaveRequestForUser = async (
         }
       }
     } else {
-      if (dateDifference >= 5) {
-        const query = `INSERT INTO leave_requests(user_id , leave_type_id , start_date, end_date , reason)
-                         VALUES (?,?,?,?,?)`;
-        try {
-          await db.query(query, [
-            userId,
-            leave_type_id,
-            start_date,
-            end_date,
-            reason,
-          ]);
-          return {
-            message: "leave request submitted with 3 step verification !",
-          };
-        } catch (error) {
-          console.log(error.message);
-          return { message: "error occurred in model (3 step verification)" };
+      if (dateDifference <= category_leaves_remaining) {
+        if (dateDifference >= 5) {
+          const query = `INSERT INTO leave_requests(user_id , leave_type_id , start_date, end_date , reason)
+                           VALUES (?,?,?,?,?)`;
+          try {
+            await db.query(query, [
+              userId,
+              leave_type_id,
+              start_date,
+              end_date,
+              reason,
+            ]);
+            return {
+              message: "leave request submitted with 3 step verification !",
+            };
+          } catch (error) {
+            console.log(error.message);
+            return { message: "error occurred in model (3 step verification)" };
+          }
+        } else if (dateDifference >= 2) {
+          const query = `INSERT INTO leave_requests(user_id , leave_type_id , start_date, end_date , reason , director_status)
+                           VALUES (?,?,?,?,?,?)`;
+          try {
+            await db.query(query, [
+              userId,
+              leave_type_id,
+              start_date,
+              end_date,
+              reason,
+              null,
+            ]);
+            return {
+              message: "leave request is submitted with 2 step verification !",
+            };
+          } catch (error) {
+            console.log(error.message);
+            return {
+              message: "error occurred in model !(2 step verification)",
+            };
+          }
+        } else {
+          const query = `INSERT INTO leave_requests(user_id , leave_type_id , start_date, end_date , reason , hr_status , director_status)
+                           VALUES (?,?,?,?,?,?,?)`;
+          try {
+            await db.query(query, [
+              userId,
+              leave_type_id,
+              start_date,
+              end_date,
+              reason,
+              null,
+              null,
+            ]);
+            return {
+              message:
+                "leave request is submitted with one step verification !",
+            };
+          } catch (error) {
+            console.log(error.message);
+            return {
+              message: "error occurred in model ! (one step verification !)",
+            };
+          }
         }
-      } else if (dateDifference >= 2) {
+      } else{
         const query = `INSERT INTO leave_requests(user_id , leave_type_id , start_date, end_date , reason , director_status)
-                         VALUES (?,?,?,?,?,?)`;
-        try {
-          await db.query(query, [
-            userId,
-            leave_type_id,
-            start_date,
-            end_date,
-            reason,
-            null,
-          ]);
-          return {
-            message: "leave request is submitted with 2 step verification !",
-          };
-        } catch (error) {
-          console.log(error.message);
-          return { message: "error occurred in model !(2 step verification)" };
-        }
-      } else {
-        const query = `INSERT INTO leave_requests(user_id , leave_type_id , start_date, end_date , reason , hr_status , director_status)
-                         VALUES (?,?,?,?,?,?,?)`;
-        try {
-          await db.query(query, [
-            userId,
-            leave_type_id,
-            start_date,
-            end_date,
-            reason,
-            null,
-            null,
-          ]);
-          return {
-            message: "leave request is submitted with one step verification !",
-          };
-        } catch (error) {
-          console.log(error.message);
-          return {
-            message: "error occurred in model ! (one step verification !)",
-          };
-        }
+                           VALUES (?,?,?,?,?,?)`;
+          try {
+            await db.query(query, [
+              userId,
+              leave_type_id,
+              start_date,
+              end_date,
+              reason,
+              null,
+            ]);
+            return {
+              message: "leave request is submitted with 2 step verification !",
+            };
+          } catch (error) {
+            console.log(error.message);
+            return {
+              message: "error occurred in model !(2 step verification)",
+            };
+          }
       }
     }
   } else {
@@ -317,7 +343,7 @@ exports.getLeaves = async (userId) => {
 };
 
 exports.getLeavesLists = async (userId) => {
-  const query = `SELECT type_name , leaves_used , category_leaves_remaining
+  const query = `SELECT type_name , leaves_used , category_leaves_remaining , description
      FROM remaining_leaves 
      JOIN leave_types
      ON leave_types.id = remaining_leaves.leave_type_id WHERE remaining_leaves.user_id = ?`;
@@ -331,7 +357,7 @@ exports.getLeavesLists = async (userId) => {
 };
 
 exports.getNames = async (leave_type_id) => {
-  const query = `SELECT id , type_name FROM leave_types`;
+  const query = `SELECT * FROM leave_types`;
   try {
     const [result] = await db.query(query);
     return result;

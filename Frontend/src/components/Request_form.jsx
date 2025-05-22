@@ -3,6 +3,7 @@ import "../style/request_form.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { useToaster, Message, Button } from "rsuite";
+import RangeCalendar from "./RangeCalendar";
 
 function Request_form(props) {
   const toaster = useToaster();
@@ -65,7 +66,7 @@ function Request_form(props) {
           method: "POST",
           headers: {
             "content-type": "application/json",
-             Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(formData),
         }
@@ -78,7 +79,7 @@ function Request_form(props) {
           </Message>,
           { placement: "topStart" }
         );
-        if(props.onSuccess) props.onSuccess();
+        if (props.onSuccess) props.onSuccess();
 
         setFormData({
           user_id: formData.user_id,
@@ -112,50 +113,49 @@ function Request_form(props) {
   return (
     <div className="form">
       <form method="POST" onSubmit={handleSubmit} className="request-form">
-        <p className="leave-request-title">Leave Request</p>
-        <div className="dates">
-          <div className="date">
-            <label htmlFor="start-date">Start Date</label>
-            <input
-              type="date"
-              id="start-date"
-              name="start_date"
-              value={formData.start_date}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="date">
-            <label htmlFor="end-date">End Date</label>
-            <input
-              type="date"
-              id="end-date"
-              name="end_date"
-              value={formData.end_date}
-              onChange={handleChange}
+        <div className="request-form-column">
+          <p className="leave-request-title">Let's make a leave request !</p>
+          <div className="dates">
+            <RangeCalendar
+              startDate={formData.start_date}
+              endDate={formData.end_date}
+              onDateChange={({ start_date, end_date }) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  start_date,
+                  end_date,
+                }))
+              }
             />
           </div>
         </div>
-        <div className="leave-type">
-          <label>Leave Type</label>
-          <select className="dropdown-menu"
-            name="leave_type_id"
-            value={formData.leave_type_id}
-            onChange={handleChange}
-          >
-            <option disabled value="">
-              SELECT LEAVE TYPE
-            </option>
-            {leaveTypeName.map((index) => (
-              <option key={index.id} value={index.id} className="dropdown-options">
-                {index.type_name}
+        <div className="request-form-column-2">
+          <div className="leave-type">
+            <label className="leave-type-title">Leave Type</label>
+            <select
+              className="dropdown-menu"
+              name="leave_type_id"
+              value={formData.leave_type_id}
+              onChange={handleChange}
+            >
+              <option disabled value="">
+                SELECT LEAVE TYPE
               </option>
-            ))}
-          </select>
-        </div>
-        <div className="footer">
+              {leaveTypeName.map((index) => (
+                <option
+                  key={index.id}
+                  value={index.id}
+                  className="dropdown-options"
+                >
+                  {index.type_name}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="reason">
             <p className="reason-title">Reason</p>
-            <textarea className="reason-textarea"
+            <textarea
+              className="reason-textarea"
               name="reason"
               value={formData.reason}
               onChange={handleChange}

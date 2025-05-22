@@ -8,23 +8,37 @@
 }
 .request-form {
   display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-around;
   height: 100%;
 }
 
+.request-form-column{
+display: flex;
+flex: 2.5;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 10px;
+margin: 5px;
+}
+.request-form-column-2{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 2.5;
+  border-left: 1.5px solid #26262d;
+  margin: 5px;
+  gap: 20px;
+}
 .leave-request-title {
   color: #ad46ff;
   font-weight: 600;
   font-size: 20px;
-  margin-left: 20px;
 }
 .dates {
   display: flex;
   justify-content: space-between;
-  border-bottom: 1.5px solid #26262d;
-  margin: 10px;
-  padding: 5px;
+
 }
 .date {
   display: flex;
@@ -74,9 +88,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   align-items: center;
   color: #fff;
   gap: 10px;
-  border-bottom: 1.5px solid #26262d;
-  margin: 10px;
-  padding: 5px;
+
+}
+.leave-type-title , .reason-title {
+  color: #ad46ff;
+  font-size: 20px;
+  font-weight: 700;
 }
 .dropdown-menu{
   width: 90%;
@@ -90,25 +107,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 
-.footer {
-  display: flex;
-  width: 100%;
-  /* height: 100%; */
-}
+
 .reason {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
-  flex: 3;
+  gap: 10px;
 }
-.reason-title {
-  font-size: 15px;
-  font-size: 20px;
-  color: #ad46ff;
-  font-weight: 600;
-}
+
 .reason-textarea {
   background-color: transparent;
   border-radius: 5px;
@@ -122,11 +130,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .submit-button-div {
-  flex: 2;
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
-  padding-right: 10px;
+display: flex;
+justify-content: flex-end;
 }
 .submit-btn{
   border-radius: 20px;

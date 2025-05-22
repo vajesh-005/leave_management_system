@@ -9,7 +9,43 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "../style/Side_nav.css";
 import { NavLink } from "react-router-dom";
-function Side_nav() {
+// const jwtDecode = require('jsonwebtoken');
+
+function Side_nav({ children }) {
+  // const token = localStorage.getItem("token");
+  // const decode = token ? jwtDecode(token) : null;
+
+  const handleLogout = async () => {
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  };
+
+  // const renderOptions = () => {
+  //   switch (decode.role) {
+  //     case "Employee":
+  //       return (
+  //         <>
+  //           <NavItem
+  //             to="/dashboard"
+  //             icon={faChartLine}
+  //             label="Dashboard"
+  //           ></NavItem>
+  //           <NavItem to="/leavelist" icon={faList} label="Leavelist"></NavItem>
+  //           <NavItem
+  //             to="/calendar"
+  //             icon={faChartLine}
+  //             label="Calendar"
+  //           ></NavItem>
+  //         </>
+  //       );
+  //       case "HR" :
+  //         return (
+  //           <>
+  //           <NavItem to={}></NavItem>
+  //           </>
+  //         )
+  //   }
+  // };
   return (
     <div className="sidebar">
       <div className="logo">
@@ -39,9 +75,11 @@ function Side_nav() {
           <FontAwesomeIcon icon={faCalendarAlt} className="calendar-icon" />
           Calendar
         </NavLink>
+
+        {children}
       </div>
 
-      <div className="logout">
+      <div className="logout" onClick={handleLogout}>
         <button className="logout-btn">Logout</button>
         <FontAwesomeIcon icon={faSignOutAlt} className="logout-icon" />
       </div>
