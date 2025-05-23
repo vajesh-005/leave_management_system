@@ -57,7 +57,7 @@ exports.getTakenLeaves = async (userId, leaveTypeId) => {
 };
 
 exports.getRequestForManager = async (managerId) => {
-  const query = `SELECT lr.*
+  const query = `SELECT lr.* , role
     FROM leave_requests lr
     JOIN users u ON lr.user_id = u.id
     WHERE u.manager_id = ?;`;
@@ -143,3 +143,16 @@ exports.createUser = async (
     return;
   }
 };
+
+exports.getUserInfo = async(userId)=>{
+  const query = `SELECT * FROM users WHERE id = ?`;
+  try{
+    const result = await db.query(query , [userId]);
+    return result;
+  }
+  catch(error){
+    console.log('error occurred in model ' , error.message);
+    return null;
+  }
+
+}

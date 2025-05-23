@@ -3,14 +3,13 @@ import { CustomProvider } from "rsuite";
 import Dashboard_leave_details from "../Dashboard_leave_details";
 import Request_form from "../Request_form";
 import Pending_request from "../Latest_requests";
-import { jwtDecode } from "jwt-decode";
 import "../../style/dashboard.css";
 import Side_nav from "../Side_nav";
 import { useState } from "react";
-import '../../index.css'
+import "../../index.css";
+import { Token } from "../Token";
 function Dashboard() {
-  const token = localStorage.getItem("token");
-  const decode = token ? jwtDecode(token) : null;
+  const { decode } = Token();
 
   const [refresh, setRefresh] = useState(0);
 

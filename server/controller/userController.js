@@ -87,3 +87,15 @@ exports.getLatestRequests = async (request, h) => {
     return h.response("Internal server error").code(500);
   }
 };
+exports.getInfo = async(request,h)=>{
+  try{
+    const userId = request.params.id;
+    const user = await userModel.getUserInfo(userId);
+    if(!user) return h.response("User not found !").code(404);
+    else return h.response(user[0]);
+  }
+  catch(error){
+    console.log('error occurred in controller !' , error.message);
+    return h.response("Internal server error").code(500);
+  }
+}

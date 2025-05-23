@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { useToaster, Message, Button } from "rsuite";
 import RangeCalendar from "./RangeCalendar";
+import {Token} from './Token';
 
 function Request_form(props) {
   const toaster = useToaster();
@@ -42,9 +43,8 @@ function Request_form(props) {
       formData.reason.trim() !== ""
     );
   };
-
+  const {token} = Token();
   const handleSubmit = async (e) => {
-    const token = localStorage.getItem("token");
     e.preventDefault();
 
     if (!isFormValid()) {

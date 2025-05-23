@@ -4,12 +4,6 @@
 }
 
 .container {
-  /* width: 1200px; */
-  margin-top: 10px;
-  /* height: 100vh; */
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
   gap: 10px;
 }
 .sidebar{

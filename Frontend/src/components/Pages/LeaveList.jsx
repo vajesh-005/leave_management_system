@@ -2,14 +2,12 @@ import React, { useEffect, useState } from "react";
 import Side_nav from "../Side_nav";
 import "../../style/Side_nav.css";
 import LeaveTypeCard from "../LeaveTypeCard";
-import { jwtDecode } from "jwt-decode";
 import "../../style/leave_list.css";
 import LeaveRules from "../LeaveRules";
-
+import {Token} from '../Token'
 function LeaveList() {
   const [leaveType, setLeaveType] = useState([]);
-  const token = localStorage.getItem("token");
-  const decode = token ? jwtDecode(token) : null;
+  const {decode , token} = Token();
   console.log(decode);
 
   useEffect(() => {

@@ -1,11 +1,5 @@
 .leave-list-container {
-  /* width: 1200px; */
-  /* height: 100vh; */
-  margin-top: 10px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  height: 100%;
+
   gap: 10px;
 }
 .side-bar-div {

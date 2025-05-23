@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import "../style/Pending_requests.css";
-function Pending_requests(props) {
+import "../style/latest_requests.css";
+import {Token} from './Token'
+function Latest_requests(props) {
   const [pendingRequest, setPendingRequest] = useState([]);
   const [leaveTypeName, setleaveTypeName] = useState([]);
   const [refresh , setRefresh] = useState(0);
   const handleCancel = async (id) => {
     try {
-      const token = localStorage.getItem("token");
+      const {token} = Token();
       const response = await fetch(`http://localhost:2406/cancelleave/${id}`, {
         method: "PUT",
         headers: {
@@ -115,4 +116,4 @@ function Pending_requests(props) {
   );
 }
 
-export default Pending_requests;
+export default Latest_requests;

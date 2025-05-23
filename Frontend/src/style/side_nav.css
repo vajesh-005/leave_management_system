@@ -1,5 +1,5 @@
 .logo {
-  width: 130px;
+  width: 120px;
   height: auto;
 }
 .lumel-logo {
@@ -16,7 +16,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  gap: 30px;
+  /* gap: 30px; */
 }
 .options {
   width: 100%;
@@ -24,7 +24,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40px;
+  gap: 30px;
 }
 .item{
     width: 100%;
@@ -48,17 +48,20 @@
   text-decoration: none;
   color: #AD46FF;
 }
-.dashboard-icon{
+.Dashboard-icon{
     color: red;
-    font-size: 20px;
 }
-.leavelists-icon{
-    color: yellow;
-    font-size: 20px;
+.Leavelist-icon{
+    color: green;
 }
-.calendar-icon{
-    color:green;
-    font-size: 20px;
+.Calendar-icon{
+    color:rgb(145, 59, 145);
+}
+.Requests-icon{
+  color:orange;
+}
+.Employees-icon{
+  color: blue;
 }
 .logout{
     width: 100%;
