@@ -36,14 +36,14 @@
 
   }
   .rdrDateInput input:hover {
-    border: 1.5px solid #AD46FF;
+    border: 1.5px solid #8E51FF;
   }
   .rdrDateInput input:focus{
-    border: 1.5px solid #AD46FF;
+    border: 1.5px solid #8E51FF;
   }
   .rdrMonthPicker select , .rdrYearPicker select {
     width: 70px;
-    color:#AD46FF;
+    color:#8E51FF;
     font-weight: 500;
     font-size: 15px;
     padding: 2px;
@@ -53,7 +53,7 @@
     background-color:black ;
   }
   .rdrWeekDay{
-    color: #AD46FF;
+    color: #8E51FF;
   }
   .rdrDayNumber span{
     color: white ;
@@ -62,23 +62,23 @@
     color: #6d6969;
   }
   .rdrDayHovered span{
-    border-color: #AD46FF;
+    border-color: #8E51FF;
   }
 
   .rdrDay .rdrStartEdge ,.rdrEndEdge  {
-    background-color:#AD46FF ;
+    background-color:#8E51FF ;
     /* border-radius: 5px; */
   }
 
   .rdrInRange{
-    background-color: #3F1761;
+    background-color: #4e4ca3;
   }
   .rdrDay span{
-    border-color: #AD46FF;
+    border-color: #8E51FF;
   }
 
   .rdrDayToday .rdrDayNumber span:after{
-    background-color: #ad46ff;
+    background-color: #8E51FF;
   }
   
   .rdrNextPrevButton {

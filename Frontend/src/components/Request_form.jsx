@@ -8,6 +8,7 @@ import {Token} from './Token';
 
 function Request_form(props) {
   const toaster = useToaster();
+  const {decode} = Token();
 
   const [formData, setFormData] = useState({
     user_id: props.id,
@@ -61,7 +62,7 @@ function Request_form(props) {
 
     try {
       const response = await fetch(
-        `http://localhost:2406/requestleave/${formData.user_id}`,
+        `http://localhost:2406/requestleave/${formData.user_id}/${decode.role}`,
         {
           method: "POST",
           headers: {

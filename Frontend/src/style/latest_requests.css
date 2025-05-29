@@ -5,7 +5,7 @@ body{
 }
 .title{
     font-size: 20px;
-    color: #AD46FF;
+    color: #8E51FF;
     font-weight: 600;
     margin-left: 25px;
     margin-top: 25px;
@@ -32,7 +32,7 @@ body{
     margin: 10px;
 }
 .pending-section::-webkit-scrollbar-thumb{
-    background-color: #AD46FF;
+    background-color: #8E51FF;
     border-radius: 5px;
 }
 .pending-request-card{
@@ -54,7 +54,7 @@ body{
 }
 .leave-name{
     font-size: 15px;
-    color: #AD46FF;
+    color: #8E51FF;
     display: flex;
     gap: 5px;
     align-items: center;

@@ -52,10 +52,18 @@ function Latest_requests(props) {
     const name = leaveTypeName.find((res) => res.id == id);
     return name ? name.type_name : "Unknown";
   };
-  const getDifference = (start, end) => {
-    const difference =
-      Math.ceil((new Date(end) - new Date(start)) / (1000 * 60 * 60 * 24)) + 1;
-    return difference;
+  const getDifference = (startDate, endDate) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    let count = 0;
+    const current = new Date(start);
+  
+    while (current <= end) {
+      const day = current.getDay();
+      if (day !== 0 && day !== 6) count++;
+      current.setDate(current.getDate() + 1);
+    }
+    return count;
   };
 
   console.log(leaveTypeName);

@@ -1,5 +1,24 @@
 const { db } = require("../configuration/db");
 
+
+const countWorkingDays = (startDate, endDate) => {
+  let start = new Date(startDate);
+  let end = new Date(endDate);
+  let count = 0;
+
+  let current = new Date(start);
+
+  while (current < end) {
+    const day = current.getDay(); 
+    if (day !== 0 && day !== 6) {
+      count++;
+    }
+    current.setDate(current.getDate() + 1); 
+  }
+  return count;
+};
+
+
 exports.putLeaveRequestForUser = async (
   userId,
   leave_type_id,
@@ -15,14 +34,13 @@ exports.putLeaveRequestForUser = async (
     };
   }
   const { category_leaves_remaining } = checkResults[0];
-  const start = new Date(start_date);
-  const end = new Date(end_date);
-  const dateDifference = (end - start) / (1000 * 60 * 60 * 24) + 1;
+
+  const dateDifference = countWorkingDays(start_date, end_date);
+
   const leaveTypeCheck = `SELECT * FROM leave_types WHERE id = ?`;
   const [leaveTyperesult] = await db.query(leaveTypeCheck, [leave_type_id]);
 
   if (leaveTyperesult.length > 0) {
-    console.log(leaveTyperesult.length);
     if (leave_type_id == 1) {
       if (dateDifference <= category_leaves_remaining) {
         if (dateDifference <= 1) {
@@ -244,15 +262,15 @@ exports.updateManagerStatus = async (leaveRequestId) => {
   try {
     await db.query(query, [leaveRequestId]);
     const check = `SELECT * FROM leave_requests WHERE id = ?`;
-    const [results] = await db.query(check, [leaveRequestId]);
+    const results = await db.query(check, [leaveRequestId]);
     const { id, manager_status, hr_status, director_status } = results[0];
     if (
       manager_status === "Approved" &&
       hr_status === "Approved" &&
       director_status === "Approved"
     ) {
-      exports.updateStatus(id);
-      return "Successfully updated 😁";
+      await exports.updateStatus(id);
+      return ({message : "Successfully updated 😁"});
     } else {
       return { message: "other verification are pending " };
     }
@@ -326,6 +344,43 @@ exports.updateStatus = async (leaveRequestId) => {
     return { message: "failed to update" };
   }
 };
+exports.updateHrStatusRejected = async (leaveRequestId) => {
+  const query = `UPDATE leave_requests 
+    SET hr_status = 'Rejected'
+    WHERE id = ?`;
+  try {
+    await db.query(query, [leaveRequestId]);
+    return ({message: "Rejected"});
+  } catch (error) {
+    console.log("error occurred in model !", error.message);
+    return { message: "failed to update" };
+  }
+};
+exports.updateManagerStatusRejected = async (leaveRequestId) => {
+  const query = `UPDATE leave_requests 
+    SET Manager_status = 'Rejected'
+    WHERE id = ?`;
+  try {
+    await db.query(query, [leaveRequestId]);
+    return ({message: "Rejected"});
+  } catch (error) {
+    console.log("error occurred in model !", error.message);
+    return { message: "failed to update" };
+  }
+};
+
+exports.updateDirectorStatusRejected = async (leaveRequestId) => {
+  const query = `UPDATE leave_requests 
+    SET Director_status = 'Rejected'
+    WHERE id = ?`;
+  try {
+    await db.query(query, [leaveRequestId]);
+    return ({message: "Rejected"});
+  } catch (error) {
+    console.log("error occurred in model !", error.message);
+    return { message: "failed to update" };
+  }
+};
 
 exports.getLeaves = async (userId) => {
   const query = `
@@ -366,3 +421,43 @@ exports.getNames = async (leave_type_id) => {
     return { message: "failed to get names " };
   }
 };
+
+
+exports.update = async (userId , requestId)=>{
+  const checkRole = `SELECT role from users WHERE id = ?`;
+  try{
+    const result =await db.query(checkRole , [userId]);
+    const role = result[0][0].role;
+    if(role=="Manager"){
+      return await exports.updateManagerStatus(requestId);
+    } else if (role=="HR"){
+      return await exports.updateHrStatus(requestId);
+    } else if (role=="Director"){
+      return await exports.updateDirectorStatus(requestId);
+    }
+  }
+  catch(error){
+    console.log('Error occurred in model !' , error.message);
+    return ({message: 'Internal server error' });
+  }
+
+}
+exports.reject = async (userId , requestId)=>{
+  const checkRole = `SELECT role from users WHERE id = ?`;
+  try{
+    const result =await db.query(checkRole , [userId]);
+    const role = result[0][0].role;
+    if(role=="Manager"){
+      return await exports.updateManagerStatusRejected(requestId);
+    } else if (role=="HR"){
+      return await exports.updateHrStatusRejected(requestId);
+    } else if (role=="Director"){
+      return await exports.updateDirectorStatusRejected(requestId);
+    }
+  }
+  catch(error){
+    console.log('Error occurred in model !' , error.message);
+    return ({message: 'Internal server error' });
+  }
+}
+

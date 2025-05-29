@@ -7,7 +7,7 @@ export const Token = () => {
     return { decode, token };
   } catch (err) {
     console.log("Invalid token:", err);
-    return { decoded: null, token: null };
+    return { decode: null, token: null };
   }
 };
     

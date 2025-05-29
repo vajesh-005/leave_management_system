@@ -1,9 +1,9 @@
 const userModel = require("../models/userModels");
 
-exports.getAllUsersWithLeavesForManager = async function (request, h) {
+exports.getAllusers = async function (request, h) {
   try {
-    const managerId = request.params.managerid;
-    const users = await userModel.fetchAllUsersWithLeaves(managerId);
+    const userId = request.params.userid;
+    const users = await userModel.fetchAllUsers(userId);
     if (!users) return h.response("Not found !").code(404);
     else return h.response(users).code(200);
   } catch (error) {
@@ -55,8 +55,8 @@ exports.getLeavesCountTakenByUser = async (request, h) => {
 
 exports.getRequestForManager = async (request, h) => {
   try {
-    const managerId = request.params.managerid;
-    const user = await userModel.getRequestForManager(managerId);
+    const userId = request.params.userId;
+    const user = await userModel.getRequestForManager(userId);
     if (!user) return h.response("user not found").code(404);
     else return h.response(user).code(200);
   } catch (error) {

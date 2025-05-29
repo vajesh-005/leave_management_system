@@ -7,6 +7,7 @@ import {
   faFolderOpen,
   faList,
   faSignOutAlt,
+  faTools,
   faUserAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import "../style/Side_nav.css";
@@ -43,32 +44,96 @@ function Side_nav() {
       case "Manager":
         return (
           <>
-            <NavItem to={"/dashboard"} label="Dashboard" icon={faChartLine}></NavItem>
-            <NavItem to={"/leavelist"} label="Leavelist" icon={faList}></NavItem>
-            <NavItem to={"/calendar"} label="Calendar" icon={faCalendarAlt}></NavItem>
-            <NavItem to={"/requests"} label="Requests" icon={faFolderOpen}></NavItem>
-            <NavItem to={"/employees"} label="Employees" icon={faUserAlt}></NavItem>
+            <NavItem
+              to={"/dashboard"}
+              label="Dashboard"
+              icon={faChartLine}
+            ></NavItem>
+            <NavItem
+              to={"/leavelist"}
+              label="Leavelist"
+              icon={faList}
+            ></NavItem>
+            <NavItem
+              to={"/calendar"}
+              label="Calendar"
+              icon={faCalendarAlt}
+            ></NavItem>
+            <NavItem
+              to={"/requests"}
+              label="Requests"
+              icon={faFolderOpen}
+            ></NavItem>
+            <NavItem
+              to={"/employees"}
+              label="Employees"
+              icon={faUserAlt}
+            ></NavItem>
           </>
         );
       case "HR":
         return (
           <>
-            <NavItem to={"/hr_dashboard"} label="Dashboard"></NavItem>
-            <NavItem to={"/leavelist"} label="Leavelist"></NavItem>
-            <NavItem to={"/calendar"} label="Calendar"></NavItem>
-            <NavItem to={"/requests"} label="Requests"></NavItem>
-            <NavItem to={"/employees"} label="Employees"></NavItem>
-            <NavItem to={"/admin_tools"} label="Admin tools"></NavItem>
+            <NavItem
+              to={"/hr_dashboard"}
+              label="Dashboard"
+              icon={faChartLine}
+            ></NavItem>
+            <NavItem
+              to={"/leavelist"}
+              label="Leavelist"
+              icon={faList}
+            ></NavItem>
+            <NavItem
+              to={"/calendar"}
+              label="Calendar"
+              icon={faCalendarAlt}
+            ></NavItem>
+            <NavItem
+              to={"/requests"}
+              label="Requests"
+              icon={faFolderOpen}
+            ></NavItem>
+            <NavItem
+              to={"/employees"}
+              label="Employees"
+              icon={faUserAlt}
+            ></NavItem>
+            <NavItem
+              to={"/admin_tools"}
+              label="Admin tools"
+              icon={faTools}
+            ></NavItem>
           </>
         );
       case "Director":
         return (
           <>
-            <NavItem to={"/director_dashboard"} label="Dashboard"></NavItem>
-            <NavItem to={"/readonly_leavelist"} label="Leavelist"></NavItem>
-            <NavItem to={"/calendar"} label="Calendar"></NavItem>
-            <NavItem to={"/requests"} label="Requests"></NavItem>
-            <NavItem to={"/employees"} label="Employees"></NavItem>
+            <NavItem
+              to={"/director_dashboard"}
+              label="Dashboard"
+              icon={faChartLine}
+            ></NavItem>
+            <NavItem
+              to={"/readonly_leavelist"}
+              label="Leavelist"
+              icon={faList}
+            ></NavItem>
+            <NavItem
+              to={"/calendar"}
+              label="Calendar"
+              icon={faCalendarAlt}
+            ></NavItem>
+            <NavItem
+              to={"/requests"}
+              label="Requests"
+              icon={faFolderOpen}
+            ></NavItem>
+            <NavItem
+              to={"/employees"}
+              label="Employees"
+              icon={faUserAlt}
+            ></NavItem>
           </>
         );
     }

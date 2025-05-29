@@ -14,11 +14,11 @@ exports.loginUser = async (request, h) => {
     if (!compare) return h.response("Password is incorrect !");
 
     const token = jwt.sign(
-      { id: user.id, role: user.role , name : user.name },
+      { id: user.id, role: user.role, name: user.name },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
-    return h.response({ token, role: user.role , user_id : user.id }).code(200);
+    return h.response({ token, role: user.role, user_id: user.id }).code(200);
   } catch (error) {
     console.log("error occurred in controller !", error.message);
     return h.response("Internal server error").code(500);
@@ -26,8 +26,16 @@ exports.loginUser = async (request, h) => {
 };
 
 exports.addUser = async (request, h) => {
-  const { name, email, password, role, manager_id, hr_id, director_id } =
-    request.payload;
+  const {
+    name,
+    email,
+    password,
+    role,
+    manager_id,
+    hr_id,
+    director_id,
+    contact_number,
+  } = request.payload;
   try {
     const hashed = await bcrypt.hash(password, 10);
     const user = await userModel.createUser(
@@ -37,7 +45,8 @@ exports.addUser = async (request, h) => {
       role,
       manager_id,
       hr_id,
-      director_id
+      director_id,
+      contact_number
     );
     return h
       .response({ message: "User successfully created ", user })

@@ -6,25 +6,25 @@ module.exports = [
   {
     method: "POST",
     path: "/login",
-    handler: authController.loginUser,
+    handler: authController.loginUser,  //requirred
   },
   {
     method: "POST",
     path: "/user",
-    handler: authController.addUser,
+    handler: authController.addUser,  //requirred
   },
-  {
-    method : 'GET',
-    path : '/userdetails/{id}',
-    handler: userController.getInfo,
-    options: {
-      pre: [{ method: verifyToken }],
-    },
-  },
+  // {
+  //   method : 'GET',
+  //   path : '/userdetails/{id}',
+  //   handler: userController.getInfo,
+  //   options: {
+  //     pre: [{ method: verifyToken }],
+  //   },
+  // },
   {
     method: "GET",
-    path: "/userswithleaves/{managerid}",
-    handler: userController.getAllUsersWithLeavesForManager,
+    path: "/mappedusers/{userid}",
+    handler: userController.getAllusers,  //requirred
     options: {
       pre: [{ method: verifyToken }],
     },
@@ -32,39 +32,39 @@ module.exports = [
   {
     method: "GET",
     path: "/users/{id}/leaves",
-    handler: userController.getLeavesForUser,
+    handler: userController.getLeavesForUser, //requirred
     options: {
       pre: [{ method: verifyToken }],
     },
   },
+  // {
+  //   method: "GET",
+  //   path: "/users/{id}/leaves/{leaveid}",
+  //   handler: userController.getCategoryLeavesForUser,
+  //   options: {
+  //     pre: [{ method: verifyToken }],
+  //   },
+  // },
+  // {
+  //   method: "GET",
+  //   path: "/user/{userid}/leavesused/{leavetypeid}",
+  //   handler: userController.getLeavesCountTakenByUser,
+  //   options: {
+  //     pre: [{ method: verifyToken }],
+  //   },
+  // },
   {
     method: "GET",
-    path: "/users/{id}/leaves/{leaveid}",
-    handler: userController.getCategoryLeavesForUser,
-    options: {
-      pre: [{ method: verifyToken }],
-    },
-  },
-  {
-    method: "GET",
-    path: "/user/{userid}/leavesused/{leavetypeid}",
-    handler: userController.getLeavesCountTakenByUser,
-    options: {
-      pre: [{ method: verifyToken }],
-    },
-  },
-  {
-    method: "GET",
-    path: "/userswithrequest/{managerid}",
-    handler: userController.getRequestForManager,
-    options: {
-      pre: [{ method: verifyToken }],
-    },
+    path: "/userswithrequest/{userId}",
+    handler: userController.getRequestForManager,  //requirred
+    // options: {
+    //   pre: [{ method: verifyToken }],
+    // },
   },
   {
     method: "GET",
     path: "/pendingleaverequest/{userid}",
-    handler: userController.getPendingRequest,
+    handler: userController.getPendingRequest, //usefull 
     options: {
       pre: [{ method: verifyToken }],
     },

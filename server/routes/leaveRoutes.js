@@ -4,8 +4,8 @@ const { verifyToken } = require('../middleware/verification');
 module.exports = [
   {
     method: 'POST',
-    path: '/requestleave/{id}',
-    handler: leaveController.requestLeaveById,
+    path: '/requestleave/{id}/{role}',
+    handler: leaveController.requestLeaveById,  //requirred
     options: {
       pre: [{ method: verifyToken }]
     }
@@ -13,7 +13,7 @@ module.exports = [
   {
     method: 'PUT',
     path: '/cancelleave/{leaverequestid}',
-    handler: leaveController.canceleavebyId,
+    handler: leaveController.canceleavebyId,  //requirred
     options: {
       pre: [{ method: verifyToken }]
     }
@@ -26,43 +26,59 @@ module.exports = [
       pre: [{ method: verifyToken }]
     }
   },
+  // {
+  //   method: 'PUT',
+  //   path: '/managerapproved/{leaverequestid}',
+  //   handler: leaveController.updateManagerStatus,
+  //   options: {
+  //     pre: [{ method: verifyToken }]
+  //   }
+  // },
   {
     method: 'PUT',
-    path: '/managerapproved/{leaverequestid}',
-    handler: leaveController.updateManagerStatus,
+    path: '/approve/{id}/{request_id}',
+    handler : leaveController.updateStatusByrole,
     options: {
       pre: [{ method: verifyToken }]
     }
-  },
+  },  
   {
     method: 'PUT',
-    path: '/directorapproved/{leaverequestid}',
-    handler: leaveController.updateDirectorStatus,
+    path: '/reject/{id}/{request_id}',
+    handler: leaveController.rejectLeaveByRole,
     options: {
-      pre: [{ method: verifyToken }]
+      pre: [{method:verifyToken}]
     }
   },
-  {
-    method: 'PUT',
-    path: '/hrapproved/{leaverequestid}',
-    handler: leaveController.updateHrStatus,
-    options: {
-      pre: [{ method: verifyToken }]
-    }
-  },
-  {
-    method: 'PUT',
-    path: '/statusapproval/{leaverequestid}',
-    handler: leaveController.updateStatus,
-    options: {
-      pre: [{ method: verifyToken }]
-    }
-  },
+  // {
+  //   method: 'PUT',
+  //   path: '/directorapproved/{leaverequestid}',
+  //   handler: leaveController.updateDirectorStatus,
+  //   options: {
+  //     pre: [{ method: verifyToken }]
+  //   }
+  // },
+  // {
+  //   method: 'PUT',
+  //   path: '/hrapproved/{leaverequestid}',
+  //   handler: leaveController.updateHrStatus,
+  //   options: {
+  //     pre: [{ method: verifyToken }]
+  //   }
+  // },
+  // {
+  //   method: 'PUT',
+  //   path: '/statusapproval/{leaverequestid}',
+  //   handler: leaveController.updateStatus,
+  //   options: {
+  //     pre: [{ method: verifyToken }]
+  //   }
+  // },
 
   {
     method: 'GET',
     path: '/totalleavesused/{userid}',
-    handler: leaveController.getleavesUsed,
+    handler: leaveController.getleavesUsed,//requirred
     options: {
       pre: [{ method: verifyToken }]
     }
@@ -70,7 +86,7 @@ module.exports = [
   {
     method: 'GET',
     path: '/leaveslist/{userid}',
-    handler: leaveController.getLeavesList,
+    handler: leaveController.getLeavesList, //requirred
     options: {
       pre: [{ method: verifyToken }]
     }
@@ -79,6 +95,6 @@ module.exports = [
   {
     method: 'GET',
     path: '/leavename',
-    handler: leaveController.getName
+    handler: leaveController.getName //requirred
   }
 ];

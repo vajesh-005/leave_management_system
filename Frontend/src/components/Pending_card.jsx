@@ -1,109 +1,86 @@
-import React, { useEffect, useState } from "react";
 import "../style/Pending_card.css";
 import { Token } from "./Token";
 
-function Pending_card({ data }) {
-  const { token } = Token();
-  const [userDetailsMap, setUserDetailsMap] = useState({});
-  const [leaveNameMap, setLeaveNameMap] = useState({});
-  const [isLoaded, setIsLoaded] = useState(false);
+function Pending_card({ data, refreshKey }) {
+  console.log(refreshKey);
+  const { decode, token } = Token();
+  const readableDate = (input) => {
+    const date = new Date(input);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
 
-  useEffect(() => {
-    const fetchAll = async () => {
-      try {
-        const userIds = [...new Set(data.map((item) => item.user_id))];
+    const formatted = day + "/" + month + "/" + year;
+    return formatted;
+  };
 
-        // Fetch user details
-        const userFetches = userIds.map((id) =>
-          fetch(`http://localhost:2406/userdetails/${id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }).then((res) =>
-            res.json().then((json) => {
-              const user = Array.isArray(json) ? json[0] : json;
-              return { id, ...user };
-            })
-          )
-        );
+  const approveRequest = async (userId, requestId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:2406/approve/${userId}/${requestId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-        // Fetch leave types
-        const leaveFetch = fetch("http://localhost:2406/leavename").then(
-          (res) => res.json()
-        );
-
-        const [users, leaveTypes] = await Promise.all([
-          Promise.all(userFetches),
-          leaveFetch,
-        ]);
-
-        // Create user map
-        const userMap = {};
-        users.forEach((user) => {
-          userMap[user.id] = user;
-        });
-
-        // Create leave name map
-        const leaveMap = {};
-        leaveTypes.forEach((leave) => {
-          leaveMap[leave.id] = leave.type_name;
-        });
-
-        setUserDetailsMap(userMap);
-        setLeaveNameMap(leaveMap);
-        setIsLoaded(true);
-      } catch (error) {
-        console.error("Error fetching user/leave info:", error.message);
+      if (!response.ok) {
+        console.log("Approval failed");
+        return;
       }
-    };
 
-    if (data.length > 0) {
-      fetchAll();
-    } else {
-      setIsLoaded(true);
+      if (refreshKey) refreshKey();
+    } catch (error) {
+      console.log(error.message);
     }
-  }, [data, token]);
+  };
 
-  if (!isLoaded) {
-    return <div className="loading">Loading pending requests...</div>;
-  }
+  const rejectRequest = async (userId , requestId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:2406/reject/${userId}/${requestId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-  if (data.length === 0) {
-    return <div className="no-data">No pending requests.</div>;
-  }
+      if (!response.ok) {
+        console.log("Rejection failed");
+        return;
+      }
+
+      if (refreshKey) refreshKey();
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <div className="leave-request-card-wrapper">
       {data.map((item, index) => {
-        const user = userDetailsMap[item.user_id] || {};
-        const leaveName = leaveNameMap[item.leave_type_id] || "Unknown";
-
         return (
           <div className="pending-card-container" key={index}>
             <div className="user-details">
-              <div className="user-name">{user.name || "Unknown"}</div>
-              <div className="user-role">{user.role || "Employee"}</div>
-              <div className="user-email">{user.email || "N/A"}</div>
+              <div className="user-name">{item.name || "Unknown"}</div>
+              <div className="user-role">{item.role || "Employee"}</div>
+              <div className="user-email">{item.email || "N/A"}</div>
             </div>
             <div className="leave-details-div">
               <div className="primary-reason">
-                <div className="leave-type-div">Leave type: {leaveName}</div>
-                {/* <div className="date-difference-div">
-                  Applied for {item.start_date} day{item.end_date > 1 ? "s" : ""}
-                </div> */}
+                <div className="leave-type-div">
+                  Leave type : {item.type_name}
+                </div>
+                <div className="date-difference-div">
+                  Applied for {item.dateDiff} day
+                </div>
                 <div className="date-range-div">
-                  {new Date(item.start_date).toLocaleDateString("en-GB", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
-
-                  to
-                  
-                  {new Date(item.end_date).toLocaleDateString("en-GB", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
+                  <div className="start">{readableDate(item.start_date)}</div>
+                  <div className="mid-point">--</div>
+                  <div className="end">{readableDate(item.end_date)}</div>
                 </div>
               </div>
               <div className="main-reason-div">
@@ -112,8 +89,18 @@ function Pending_card({ data }) {
               </div>
             </div>
             <div className="approval-div">
-              <button className="approve-btn btn">Approve</button>
-              <button className="reject-btn btn">Reject</button>
+              <button
+                className="approve-btn btn"
+                onClick={() => approveRequest(decode.id, item.id)}
+              >
+                Approve
+              </button>
+              <button
+                className="reject-btn btn"
+                onClick={() => rejectRequest(decode.id, item.id)}
+              >
+                Reject
+              </button>
             </div>
           </div>
         );

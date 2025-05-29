@@ -42,11 +42,11 @@
     background-color: #424245;
     cursor: pointer;
     text-decoration: none;
-    color: #AD46FF;
+    color: #8E51FF;
 }
 .item:focus{
   text-decoration: none;
-  color: #AD46FF;
+  color: #8E51FF;
 }
 .Dashboard-icon{
     color: red;
@@ -74,9 +74,9 @@
     color: rgb(171, 166, 166);
 }
 .logout-icon{
-    color: #AD46FF;
+    color: #8E51FF;
 }
 .active{
-  border-left: 4px solid #AD46FF;
-  color: #AD46FF;
+  border-left: 4px solid #8E51FF;
+  color: #8E51FF;
 }

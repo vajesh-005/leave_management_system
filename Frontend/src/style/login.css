@@ -34,11 +34,11 @@
 }
 .login-title{
     font-size: 25px;
-    color:#AD46FF ;
+    color:#8E51FF ;
     font-weight: 500;
 }
 #email-input:focus , #password-input:focus{
-    border: 1.5px solid #AD46FF;
+    border: 1.5px solid #8E51FF;
     animation: borderAnimation 0.5s ease-in-out;
     outline: none;
 }
@@ -48,7 +48,7 @@
         border-color: #26262D;
     }
     100%{
-        border-color: #AD46FF;
+        border-color: #8E51FF;
     }
 }
 .button-div{

@@ -3,8 +3,9 @@ const leaveModel = require('../models/leaveModels');
 exports.requestLeaveById = async (request, h) => {
   try {
     const userId = request.params.id;
+    const role = request.params.role;
     const { leave_type_id, start_date, end_date, reason } = request.payload;
-    const user = await leaveModel.putLeaveRequestForUser(userId, leave_type_id, start_date, end_date, reason);
+    const user = await leaveModel.putLeaveRequestForUser(userId, leave_type_id, start_date, end_date, reason , role);
     if (!user) return h.response("User not found").code(404);
     else return h.response(user).code(200);
   }
@@ -123,5 +124,32 @@ exports.getName = async (request, h) => {
   catch(error){
     console.log('error occurred in controller !',error.message);
     return h.response('Internal server error').code(500)
+  }
+}
+
+exports.updateStatusByrole = async (request , h)=>{
+    const userId = request.params.id;
+    const requestId = request.params.request_id;
+    try{
+      const user = await leaveModel.update(userId , requestId);
+      if (!user) return h.response('Invalid role or update failed').code(400);      return h.response(user).code(200);
+    }
+    catch(error){
+      console.log('Error occurred in controller !' , error.message);
+      return h.response('Internal server error ').code(500);
+    }
+}
+exports.rejectLeaveByRole = async (request , h)=>{
+  const userId = request.params.id;
+  const requestId = request.params.request_id;
+
+  try{
+    const user = await leaveModel.reject(userId,requestId);
+    if(!user) return h.response('Invalid role !').code(400);
+    return h.response(user).code(200)
+  }
+  catch(error){
+    console.log('Error occurred in controller !' , error.message);
+    return h.response('Internal server error !').code(500)
   }
 }

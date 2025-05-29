@@ -7,6 +7,7 @@ function Hr_dashboard() {
   return (
     <div className='width'>
       <Side_nav/>
+      <div className="grid"></div>
     </div>
   )
 }

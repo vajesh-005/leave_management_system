@@ -2,7 +2,7 @@ import "rsuite/dist/rsuite.min.css";
 import { CustomProvider } from "rsuite";
 import Dashboard_leave_details from "../Dashboard_leave_details";
 import Request_form from "../Request_form";
-import Pending_request from "../Latest_requests";
+import Latest_request from "../Latest_requests";
 import "../../style/dashboard.css";
 import Side_nav from "../Side_nav";
 import { useState } from "react";
@@ -31,7 +31,7 @@ function Dashboard() {
               <Request_form id={decode.id} onSuccess={handleRefresh} />
             </div>
             <div className="column">
-              <Pending_request id={decode.id} refreshKey={refresh} />
+              <Latest_request id={decode.id} refreshKey={refresh} />
             </div>
           </div>
         </div>
