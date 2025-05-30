@@ -29,7 +29,7 @@
 .greeting {
   display: flex;
   align-items: baseline;
-  gap: px;
+  gap: 5px;
 }
 .welcome {
   color: #8E51FF;
@@ -39,6 +39,10 @@
 .name {
   font-size: 30px;
   color: white;
+}
+.designation{
+  color: #8E51FF;
+  font-size: 0.8rem;
 }
 
 

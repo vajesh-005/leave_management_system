@@ -1,29 +1,47 @@
 const { db } = require("../configuration/db");
 const bcrypt = require("bcrypt");
 
-exports.fetchAllUsers = async (userId) => {
-  const query = `SELECT 
-    u.id AS employee_id,
-    u.name AS employee_name,
-    u.role,
-    u.email,
-    u.date_of_joining,
-    u.contact_number,
-    m.name AS manager_name
-FROM users u
-LEFT JOIN users m ON u.manager_id = m.id
-LEFT JOIN remaining_leaves rl ON rl.user_id = u.id
-WHERE u.manager_id = ?
-GROUP BY u.id, u.name, u.role, u.email, m.name
-ORDER BY u.id;`;
+exports.fetchAllUsers = async (userId, role) => {
+  let condition = "";
+  if (role === "Manager") {
+    condition = "u.manager_id = ?";
+  } else if (role === "HR") {
+    condition = "u.hr_id = ?";
+  } else if (role === "Director") {
+    condition = "u.director_id = ?";
+  } else {
+    return []; // Not a valid role to fetch subordinates
+  }
+
+  const query = `
+    SELECT 
+      u.id AS employee_id,
+      u.name AS employee_name,
+      u.role,
+      u.email,
+      u.date_of_joining,
+      u.contact_number,
+      mgr.name AS manager_name,
+      hr.name AS hr_name,
+      dir.name AS director_name
+    FROM users u
+    LEFT JOIN users mgr ON u.manager_id = mgr.id
+    LEFT JOIN users hr ON u.hr_id = hr.id
+    LEFT JOIN users dir ON u.director_id = dir.id
+    WHERE ${condition}
+    ORDER BY u.id;
+  `;
+
   try {
     const [results] = await db.query(query, [userId]);
     return results;
   } catch (error) {
-    console.log("error occurred in model !", error.message);
-    return;
+    console.log("Error in fetchAllUsers:", error.message);
+    return [];
   }
 };
+
+
 
 exports.fetchTotalLeavesForUser = async (id) => {
   const query = `SELECT user_id , total_remaining_days 
@@ -74,17 +92,20 @@ exports.getRequests = async (userId) => {
     query = `SELECT leave_requests.id, users.name ,users.role, users.email,leave_types.type_name,reason , start_date, end_date,ABS(DATEDIFF(end_date , start_date))+1 AS dateDiff  FROM leave_requests
     JOIN users ON users.id = leave_requests.user_id
     JOIN leave_types ON leave_types.id = leave_requests.leave_type_id
-    WHERE users.manager_id= ? AND leave_requests.manager_status = 'PENDING';`;
+    WHERE users.manager_id= ? AND leave_requests.manager_status = 'PENDING'
+    ORDER BY leave_requests.id DESC;`;
   } else if (role == "HR") {
     query = `SELECT leave_requests.id, users.name ,users.role, users.email,leave_types.type_name,reason , start_date, end_date,ABS(DATEDIFF(end_date , start_date))+1 AS dateDiff  FROM leave_requests
     JOIN users ON users.id = leave_requests.user_id
     JOIN leave_types ON leave_types.id = leave_requests.leave_type_id
-    WHERE users.hr_id= ? AND leave_requests.hr_status = 'PENDING';`;
+    WHERE users.hr_id= ? AND leave_requests.hr_status = 'PENDING'
+    ORDER BY leave_requests.id DESC;`;
   } else if (role == "Director") {
     query = `SELECT leave_requests.id, users.name ,users.role, users.email,leave_types.type_name,reason , start_date, end_date,ABS(DATEDIFF(end_date , start_date))+1 AS dateDiff  FROM leave_requests
     JOIN users ON users.id = leave_requests.user_id
     JOIN leave_types ON leave_types.id = leave_requests.leave_type_id
-    WHERE users.director_id= ? AND leave_requests.director_status = 'PENDING';`;
+    WHERE users.director_id= ? AND leave_requests.director_status = 'PENDING'
+    ORDER BY leave_requests.id DESC;`;
   }
   try {
     const [result] = await db.query(query, [userId]);

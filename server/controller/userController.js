@@ -3,7 +3,8 @@ const userModel = require("../models/userModels");
 exports.getAllusers = async function (request, h) {
   try {
     const userId = request.params.userid;
-    const users = await userModel.fetchAllUsers(userId);
+    const role = request.params.role;
+    const users = await userModel.fetchAllUsers(userId , role);
     if (!users) return h.response("Not found !").code(404);
     else return h.response(users).code(200);
   } catch (error) {

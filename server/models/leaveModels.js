@@ -168,26 +168,31 @@ exports.putLeaveRequestForUser = async (
 };
 
 exports.updateLeaveCount = async (leaveRequestId) => {
-  const dataQuery =
-    "SELECT user_id , leave_type_id , start_date , end_date FROM leave_requests WHERE id = ?";
+  const dataQuery = `
+    SELECT user_id, leave_type_id, start_date, end_date
+    FROM leave_requests
+    WHERE id = ?
+  `;
+
   const [dataResult] = await db.query(dataQuery, [leaveRequestId]);
   const { user_id, leave_type_id, start_date, end_date } = dataResult[0];
-  const startDate = new Date(start_date);
-  const endDate = new Date(end_date);
-  const dateDifference = (endDate - startDate) / (1000 * 60 * 60 * 24) + 1;
+
+  const dateDifference = countWorkingDays(start_date, end_date); // ensure this is not async
+  console.log(dateDifference , 'diff')
   const updateCategoryCountQuery = `
     UPDATE remaining_leaves
     SET
-    leaves_used = leaves_used + ?,
-    category_leaves_remaining = category_leaves_remaining - ?
+      leaves_used = leaves_used + ?,
+      category_leaves_remaining = category_leaves_remaining - ?
     WHERE user_id = ? AND leave_type_id = ?
-    `;
+  `;
 
   const updateTotalCountQuery = `
     UPDATE remaining_leaves
     SET total_remaining_days = total_remaining_days - ?
     WHERE user_id = ?
-    `;
+  `;
+
   try {
     await db.query(updateCategoryCountQuery, [
       dateDifference,
@@ -195,15 +200,18 @@ exports.updateLeaveCount = async (leaveRequestId) => {
       user_id,
       leave_type_id,
     ]);
+
     await db.query(updateTotalCountQuery, [dateDifference, user_id]);
-    return "successfully updated ! 😁";
+
+    return "Successfully updated! 😁";
   } catch (error) {
-    console.log("error occurred in model !", error.message);
+    console.log("Error occurred in model!", error.message);
     return {
-      message: "not able to update !",
+      message: "Not able to update!",
     };
   }
 };
+
 
 exports.cancelLeaveRequest = async (leaveRequestId) => {
   const query = `UPDATE leave_requests 
@@ -218,81 +226,56 @@ exports.cancelLeaveRequest = async (leaveRequestId) => {
   }
 };
 exports.updateManagerStatus = async (leaveRequestId) => {
-  const query = `UPDATE leave_requests 
-    SET manager_status = "Approved"
-    WHERE id = ?`;
+  const query = `UPDATE leave_requests SET manager_status = 'Approved' WHERE id = ?`;
   try {
     await db.query(query, [leaveRequestId]);
-    const check = `SELECT * FROM leave_requests WHERE id = ?`;
-    const results = await db.query(check, [leaveRequestId]);
-    const { id, manager_status, hr_status, director_status } = results[0];
-    if (
-      manager_status === "Approved" &&
-      hr_status === "Approved" &&
-      director_status === "Approved"
-    ) {
-      await exports.updateStatus(id);
-      return { message: "Successfully updated 😁" };
-    } else {
-      return { message: "other verification are pending " };
-    }
+    return await checkAndUpdateOverallStatus(leaveRequestId);
   } catch (error) {
-    console.log("error occurred in model !", error.message);
-    return {
-      message: "failed to update",
-    };
+    console.log("error occurred in model!", error.message);
+    return { message: "Failed to update" };
   }
 };
+
 
 exports.updateDirectorStatus = async (leaveRequestId) => {
-  const query = `UPDATE leave_requests 
-    SET director_status = 'Approved'
-    WHERE id = ?`;
+  const query = `UPDATE leave_requests SET director_status = 'Approved' WHERE id = ?`;
   try {
     await db.query(query, [leaveRequestId]);
-    const check = `SELECT * FROM leave_requests WHERE id = ?`;
-    const [results] = await db.query(check, [leaveRequestId]);
-    const { id, manager_status, hr_status, director_status } = results[0];
-    if (
-      manager_status === "Approved" &&
-      hr_status === "Approved" &&
-      director_status === "Approved"
-    ) {
-      exports.updateStatus(id);
-      return "Successfully updated 😁";
-    } else {
-      return { message: "other verification are pending " };
-    }
+    return await checkAndUpdateOverallStatus(leaveRequestId);
   } catch (error) {
-    console.log("error occurred in model !", error.message);
-    return { message: "failed to update" };
+    console.log("error occurred in model!", error.message);
+    return { message: "Failed to update" };
   }
 };
 
+
 exports.updateHrStatus = async (leaveRequestId) => {
-  const query = `UPDATE leave_requests 
-    SET hr_status = 'Approved'
-    WHERE id = ?`;
+  const query = `UPDATE leave_requests SET hr_status = 'Approved' WHERE id = ?`;
   try {
     await db.query(query, [leaveRequestId]);
-    const check = `SELECT * FROM leave_requests WHERE id = ?`;
-    const [results] = await db.query(check, [leaveRequestId]);
-    const { id, manager_status, hr_status, director_status } = results[0];
-    if (
-      manager_status === "Approved" &&
-      hr_status === "Approved" &&
-      director_status === "Approved"
-    ) {
-      exports.updateStatus(id);
-      return "Successfully updated 😁";
-    } else {
-      return { message: "other verification are pending " };
-    }
+    return await checkAndUpdateOverallStatus(leaveRequestId);
   } catch (error) {
-    console.log("error occurred in model !", error.message);
-    return { message: "failed to update" };
+    console.log("error occurred in model!", error.message);
+    return { message: "Failed to update" };
   }
 };
+const checkAndUpdateOverallStatus = async (leaveRequestId) => {
+  const check = `SELECT manager_status, hr_status, director_status FROM leave_requests WHERE id = ?`;
+  const [[request]] = await db.query(check, [leaveRequestId]);
+
+  const statuses = [request.manager_status, request.hr_status, request.director_status];
+
+  const allApprovedOrNull = statuses.every(status => status === "Approved" || status === null);
+
+  if (allApprovedOrNull) {
+    await exports.updateStatus(leaveRequestId);
+    await exports.updateLeaveCount(leaveRequestId);
+    return { message: "All approvals done. Overall status updated to Approved ✅" };
+  } else {
+    return { message: "Other verifications are still pending ⏳" };
+  }
+};
+
 
 exports.updateStatus = async (leaveRequestId) => {
   const query = `UPDATE leave_requests 

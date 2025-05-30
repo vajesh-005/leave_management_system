@@ -62,7 +62,7 @@ function Request_form(props) {
 
     try {
       const response = await fetch(
-        `http://localhost:2406/requestleave/${formData.user_id}/${decode.role}`,
+        `http://localhost:2406/requestleave/${formData.user_id}`,
         {
           method: "POST",
           headers: {

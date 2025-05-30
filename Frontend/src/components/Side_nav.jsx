@@ -7,7 +7,7 @@ import {
   faFolderOpen,
   faList,
   faSignOutAlt,
-  faTools,
+  // faTools,
   faUserAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import "../style/Side_nav.css";
@@ -99,11 +99,11 @@ function Side_nav() {
               label="Employees"
               icon={faUserAlt}
             ></NavItem>
-            <NavItem
+            {/* <NavItem
               to={"/admin_tools"}
               label="Admin tools"
               icon={faTools}
-            ></NavItem>
+            ></NavItem> */}
           </>
         );
       case "Director":

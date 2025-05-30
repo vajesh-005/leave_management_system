@@ -23,7 +23,7 @@ module.exports = [
   // },
   {
     method: "GET",
-    path: "/mappedusers/{userid}",
+    path: "/mappedusers/{userid}/{role}",
     handler: userController.getAllusers,  //requirred
     options: {
       pre: [{ method: verifyToken }],

@@ -11,7 +11,7 @@ function Employees() {
   useEffect(() => {
     if (!decode?.id) return;
 
-    fetch(`http://localhost:2406/mappedusers/${decode.id}`, {
+    fetch(`http://localhost:2406/mappedusers/${decode.id}/${decode.role}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -20,7 +20,7 @@ function Employees() {
       .then((results) => results.json())
       .then((data) => setEmployees(data))
       .catch((error) => console.log(error));
-  }, [decode.id, token]);
+  }, [decode.id, decode.role, token]);
   return (
     <div className="width employees-container">
       <Side_nav />

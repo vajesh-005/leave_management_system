@@ -24,6 +24,7 @@ function Dashboard() {
           <div className="greeting">
             <span className="welcome">Hey,</span>
             <span className="name">{decode.name}</span>
+            <span className="designation">{decode.role.toUpperCase()}</span>
           </div>
           <div className="main">
             <div className="column">
