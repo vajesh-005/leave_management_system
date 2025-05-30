@@ -53,10 +53,10 @@ exports.getLeavesCountTakenByUser = async (request, h) => {
   }
 };
 
-exports.getRequestForManager = async (request, h) => {
+exports.getRequest = async (request, h) => {
   try {
     const userId = request.params.userId;
-    const user = await userModel.getRequestForManager(userId);
+    const user = await userModel.getRequests(userId);
     if (!user) return h.response("user not found").code(404);
     else return h.response(user).code(200);
   } catch (error) {

@@ -1,23 +1,18 @@
 const { db } = require("../configuration/db");
 
-
 const countWorkingDays = (startDate, endDate) => {
-  let start = new Date(startDate);
-  let end = new Date(endDate);
+  const start = new Date(startDate);
+  const end = new Date(endDate);
   let count = 0;
+  const current = new Date(start);
 
-  let current = new Date(start);
-
-  while (current < end) {
-    const day = current.getDay(); 
-    if (day !== 0 && day !== 6) {
-      count++;
-    }
-    current.setDate(current.getDate() + 1); 
+  while (current <= end) {
+    const day = current.getDay();
+    if (day !== 0 && day !== 6) count++;
+    current.setDate(current.getDate() + 1);
   }
   return count;
 };
-
 
 exports.putLeaveRequestForUser = async (
   userId,
@@ -34,174 +29,141 @@ exports.putLeaveRequestForUser = async (
     };
   }
   const { category_leaves_remaining } = checkResults[0];
-
   const dateDifference = countWorkingDays(start_date, end_date);
 
-  const leaveTypeCheck = `SELECT * FROM leave_types WHERE id = ?`;
-  const [leaveTyperesult] = await db.query(leaveTypeCheck, [leave_type_id]);
+  const leaveTypeQuery = `SELECT type_name FROM leave_types WHERE id = ?`;
+  const [leaveTypeResult] = await db.query(leaveTypeQuery, [leave_type_id]);
+  if (!leaveTypeResult.length) return { message: "Unidentified leave type!" };
 
-  if (leaveTyperesult.length > 0) {
-    if (leave_type_id == 1) {
-      if (dateDifference <= category_leaves_remaining) {
-        if (dateDifference <= 1) {
-          const query =
-            "INSERT INTO leave_requests(user_id , leave_type_id , start_date, end_date , reason , status , hr_status , director_status , manager_status) VALUES (?,?,?,?,?,?,?,?,?)";
-          try {
-            const [result] = await db.query(query, [
-              userId,
-              leave_type_id,
-              start_date,
-              end_date,
-              reason,
-              "Approved",
-              null,
-              null,
-              null,
-            ]);
-            await exports.updateLeaveCount(result.insertId);
-            return {
-              message: "leave request accepted and updated leave count",
-              request_id: result.insertId,
-            };
-          } catch (error) {
-            console.log("error occurred in model !", error.message);
-            return {
-              message: "leave request not able to submit !",
-            };
-          }
-        } else {
-          const query = `INSERT INTO leave_requests(user_id , leave_type_id , start_date, end_date , reason , hr_status , director_status)
-                         VALUES (?,?,?,?,?,?,?)`;
-          try {
-            await db.query(query, [
-              userId,
-              leave_type_id,
-              start_date,
-              end_date,
-              reason,
-              null,
-              null,
-            ]);
-            return {
-              message: "leave request submitted in one step verification !",
-            };
-          } catch (error) {
-            console.log(error.message);
-            return {
-              message: "error occurred in model (one step verification)",
-            };
-          }
-        }
-      } else {
-        const query = `INSERT INTO leave_requests(user_id , leave_type_id , start_date, end_date , reason , director_status)
-                         VALUES (?,?,?,?,?,?)`;
-        try {
-          await db.query(query, [
-            userId,
-            leave_type_id,
-            start_date,
-            end_date,
-            reason,
-            null,
-          ]);
-          return {
-            message: "leave request submitted with two step verification !",
-          };
-        } catch (error) {
-          console.log(error.message);
-          return { message: "error occurred in model (two step verification)" };
-        }
-      }
+  const leaveTypeName = leaveTypeResult[0].type_name;
+
+  const userQuery = `SELECT role FROM users WHERE id = ?`;
+  const [userResult] = await db.query(userQuery, [userId]);
+  if (!userResult.length) return { message: "User not found!" };
+
+  const userRole = userResult[0].role;
+
+  console.log("leaveTypeName:", leaveTypeName);
+
+
+  // Determine how many approvals are needed
+  let approvalsNeeded = 1;
+  console.log("Checking Sick Leave Condition:", leaveTypeName.trim());
+
+  if (leaveTypeName.trim() === "Sick Leave") {
+    console.log("Inside Sick Leave");
+  
+    if (dateDifference === 1 && category_leaves_remaining > 0) {
+      approvalsNeeded = 0;
+      console.log("Auto-approved: 1-day sick leave with remaining balance");
+    } else if (category_leaves_remaining >= dateDifference) {
+      approvalsNeeded = 0;
+      console.log("Auto-approved: Sick leave with enough remaining days");
     } else {
-      if (dateDifference <= category_leaves_remaining) {
-        if (dateDifference >= 5) {
-          const query = `INSERT INTO leave_requests(user_id , leave_type_id , start_date, end_date , reason)
-                           VALUES (?,?,?,?,?)`;
-          try {
-            await db.query(query, [
-              userId,
-              leave_type_id,
-              start_date,
-              end_date,
-              reason,
-            ]);
-            return {
-              message: "leave request submitted with 3 step verification !",
-            };
-          } catch (error) {
-            console.log(error.message);
-            return { message: "error occurred in model (3 step verification)" };
-          }
-        } else if (dateDifference >= 2) {
-          const query = `INSERT INTO leave_requests(user_id , leave_type_id , start_date, end_date , reason , director_status)
-                           VALUES (?,?,?,?,?,?)`;
-          try {
-            await db.query(query, [
-              userId,
-              leave_type_id,
-              start_date,
-              end_date,
-              reason,
-              null,
-            ]);
-            return {
-              message: "leave request is submitted with 2 step verification !",
-            };
-          } catch (error) {
-            console.log(error.message);
-            return {
-              message: "error occurred in model !(2 step verification)",
-            };
-          }
-        } else {
-          const query = `INSERT INTO leave_requests(user_id , leave_type_id , start_date, end_date , reason , hr_status , director_status)
-                           VALUES (?,?,?,?,?,?,?)`;
-          try {
-            await db.query(query, [
-              userId,
-              leave_type_id,
-              start_date,
-              end_date,
-              reason,
-              null,
-              null,
-            ]);
-            return {
-              message:
-                "leave request is submitted with one step verification !",
-            };
-          } catch (error) {
-            console.log(error.message);
-            return {
-              message: "error occurred in model ! (one step verification !)",
-            };
-          }
-        }
-      } else{
-        const query = `INSERT INTO leave_requests(user_id , leave_type_id , start_date, end_date , reason , director_status)
-                           VALUES (?,?,?,?,?,?)`;
-          try {
-            await db.query(query, [
-              userId,
-              leave_type_id,
-              start_date,
-              end_date,
-              reason,
-              null,
-            ]);
-            return {
-              message: "leave request is submitted with 2 step verification !",
-            };
-          } catch (error) {
-            console.log(error.message);
-            return {
-              message: "error occurred in model !(2 step verification)",
-            };
-          }
-      }
+      approvalsNeeded = 1;
+      console.log("Approval required: Not enough balance");
+    }
+  }
+  
+  else {
+    if (dateDifference > 5) approvalsNeeded = 3;
+    else if (dateDifference > 1) approvalsNeeded = 2;
+    else if (category_leaves_remaining >= dateDifference) approvalsNeeded = 1;
+    else approvalsNeeded = 2;
+  }
+
+  // Determine who should approve based on role
+  let statusFields = {
+    manager_status: null,
+    hr_status: null,
+    director_status: null,
+    status: "Pending",
+  };
+
+  const setFirstApprover = () => {
+    if (userRole === "Employee") statusFields.manager_status = "Pending";
+    else if (userRole === "Manager") statusFields.hr_status = "Pending";
+    else if (userRole === "HR") statusFields.director_status = "Pending";
+    else if (userRole === "Director") statusFields.hr_status = "Pending";
+  };
+
+  const setSecondApprover = () => {
+    if (userRole === "Employee") {
+      statusFields.manager_status = "Pending";
+      statusFields.hr_status = "Pending";
+    } else if (userRole === "Manager") {
+      statusFields.hr_status = "Pending";
+      statusFields.director_status = "Pending";
+    } else if (userRole === "HR") {
+      statusFields.director_status = "Pending";
+      statusFields.manager_status = "Pending"; // loops back to manager
+    } else if (userRole === "Director") {
+      statusFields.hr_status = "Pending";
+      statusFields.manager_status = "Pending"; // loops back
+    }
+  };
+
+  const setThirdApprover = () => {
+    statusFields.manager_status = "Pending";
+    statusFields.hr_status = "Pending";
+    statusFields.director_status = "Pending";
+  };
+
+  if (leaveTypeName === "Sick Leave" && approvalsNeeded === 0) {
+    const query = `INSERT INTO leave_requests(user_id, leave_type_id, start_date, end_date, reason, status, manager_status, hr_status, director_status)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    try {
+      const [result] = await db.query(query, [
+        userId,
+        leave_type_id,
+        start_date,
+        end_date,
+        reason,
+        "Approved",
+        null,
+        null,
+        null,
+      ]);
+      await exports.updateLeaveCount(result.insertId);
+      return {
+        message: "Auto-approved sick leave. Leave count updated.",
+        request_id: result.insertId,
+      };
+    } catch (err) {
+      console.log(err.message);
+      return { message: "Error while submitting auto-approved sick leave." };
     }
   } else {
-    return { message: "Unidentified leave type !" };
+    if (approvalsNeeded === 1) {
+      setFirstApprover();
+    } else if (approvalsNeeded === 2) {
+      setSecondApprover();
+    } else if (approvalsNeeded === 3) {
+      setThirdApprover();
+    }
+
+    const query = `INSERT INTO leave_requests(user_id, leave_type_id, start_date, end_date, reason, status, manager_status, hr_status, director_status)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    try {
+      const [result] = await db.query(query, [
+        userId,
+        leave_type_id,
+        start_date,
+        end_date,
+        reason,
+        statusFields.status,
+        statusFields.manager_status,
+        statusFields.hr_status,
+        statusFields.director_status,
+      ]);
+      return {
+        message: `Leave request submitted with ${approvalsNeeded} step verification!`,
+        request_id: result.insertId,
+      };
+    } catch (err) {
+      console.log(err.message);
+      return { message: `Error occurred while submitting leave request.` };
+    }
   }
 };
 
@@ -270,7 +232,7 @@ exports.updateManagerStatus = async (leaveRequestId) => {
       director_status === "Approved"
     ) {
       await exports.updateStatus(id);
-      return ({message : "Successfully updated 😁"});
+      return { message: "Successfully updated 😁" };
     } else {
       return { message: "other verification are pending " };
     }
@@ -350,7 +312,7 @@ exports.updateHrStatusRejected = async (leaveRequestId) => {
     WHERE id = ?`;
   try {
     await db.query(query, [leaveRequestId]);
-    return ({message: "Rejected"});
+    return { message: "Rejected" };
   } catch (error) {
     console.log("error occurred in model !", error.message);
     return { message: "failed to update" };
@@ -362,7 +324,7 @@ exports.updateManagerStatusRejected = async (leaveRequestId) => {
     WHERE id = ?`;
   try {
     await db.query(query, [leaveRequestId]);
-    return ({message: "Rejected"});
+    return { message: "Rejected" };
   } catch (error) {
     console.log("error occurred in model !", error.message);
     return { message: "failed to update" };
@@ -375,7 +337,7 @@ exports.updateDirectorStatusRejected = async (leaveRequestId) => {
     WHERE id = ?`;
   try {
     await db.query(query, [leaveRequestId]);
-    return ({message: "Rejected"});
+    return { message: "Rejected" };
   } catch (error) {
     console.log("error occurred in model !", error.message);
     return { message: "failed to update" };
@@ -422,42 +384,37 @@ exports.getNames = async (leave_type_id) => {
   }
 };
 
-
-exports.update = async (userId , requestId)=>{
+exports.update = async (userId, requestId) => {
   const checkRole = `SELECT role from users WHERE id = ?`;
-  try{
-    const result =await db.query(checkRole , [userId]);
+  try {
+    const result = await db.query(checkRole, [userId]);
     const role = result[0][0].role;
-    if(role=="Manager"){
+    if (role == "Manager") {
       return await exports.updateManagerStatus(requestId);
-    } else if (role=="HR"){
+    } else if (role == "HR") {
       return await exports.updateHrStatus(requestId);
-    } else if (role=="Director"){
+    } else if (role == "Director") {
       return await exports.updateDirectorStatus(requestId);
     }
+  } catch (error) {
+    console.log("Error occurred in model !", error.message);
+    return { message: "Internal server error" };
   }
-  catch(error){
-    console.log('Error occurred in model !' , error.message);
-    return ({message: 'Internal server error' });
-  }
-
-}
-exports.reject = async (userId , requestId)=>{
+};
+exports.reject = async (userId, requestId) => {
   const checkRole = `SELECT role from users WHERE id = ?`;
-  try{
-    const result =await db.query(checkRole , [userId]);
+  try {
+    const result = await db.query(checkRole, [userId]);
     const role = result[0][0].role;
-    if(role=="Manager"){
+    if (role == "Manager") {
       return await exports.updateManagerStatusRejected(requestId);
-    } else if (role=="HR"){
+    } else if (role == "HR") {
       return await exports.updateHrStatusRejected(requestId);
-    } else if (role=="Director"){
+    } else if (role == "Director") {
       return await exports.updateDirectorStatusRejected(requestId);
     }
+  } catch (error) {
+    console.log("Error occurred in model !", error.message);
+    return { message: "Internal server error" };
   }
-  catch(error){
-    console.log('Error occurred in model !' , error.message);
-    return ({message: 'Internal server error' });
-  }
-}
-
+};

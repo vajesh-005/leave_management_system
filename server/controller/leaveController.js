@@ -3,9 +3,8 @@ const leaveModel = require('../models/leaveModels');
 exports.requestLeaveById = async (request, h) => {
   try {
     const userId = request.params.id;
-    const role = request.params.role;
     const { leave_type_id, start_date, end_date, reason } = request.payload;
-    const user = await leaveModel.putLeaveRequestForUser(userId, leave_type_id, start_date, end_date, reason , role);
+    const user = await leaveModel.putLeaveRequestForUser(userId, leave_type_id, start_date, end_date, reason);
     if (!user) return h.response("User not found").code(404);
     else return h.response(user).code(200);
   }

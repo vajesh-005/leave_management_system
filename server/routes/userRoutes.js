@@ -56,10 +56,10 @@ module.exports = [
   {
     method: "GET",
     path: "/userswithrequest/{userId}",
-    handler: userController.getRequestForManager,  //requirred
-    // options: {
-    //   pre: [{ method: verifyToken }],
-    // },
+    handler: userController.getRequest,  //requirred
+    options: {
+      pre: [{ method: verifyToken }],
+    },
   },
   {
     method: "GET",

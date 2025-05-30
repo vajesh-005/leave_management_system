@@ -4,7 +4,7 @@ const { verifyToken } = require('../middleware/verification');
 module.exports = [
   {
     method: 'POST',
-    path: '/requestleave/{id}/{role}',
+    path: '/requestleave/{id}',
     handler: leaveController.requestLeaveById,  //requirred
     options: {
       pre: [{ method: verifyToken }]

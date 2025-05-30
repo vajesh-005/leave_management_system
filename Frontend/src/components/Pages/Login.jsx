@@ -27,7 +27,7 @@ function Login() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     if (!isFormValid()) {
       toaster.push(
         <Message type="warning" closable duration={3000}>
@@ -37,7 +37,9 @@ function Login() {
       );
       return;
     }
+  
     setIsSubmitting(true);
+  
     try {
       const response = await fetch(`http://localhost:2406/login`, {
         method: "POST",
@@ -46,42 +48,44 @@ function Login() {
         },
         body: JSON.stringify(formData),
       });
-
+  
+      const data = await response.json();
+  
       if (response.ok) {
         toaster.push(
           <Message type="success" closable duration={3000}>
-            Successfully logged in .
+            Successfully logged in.
           </Message>,
           { placement: "topStart" }
         );
-        const data = await response.json();
+  
         const token = data.token;
-
         localStorage.setItem("token", token);
-
+  
         const decode = jwtDecode(token);
         const { role } = decode;
+  
         setTimeout(() => {
-          if (role == "HR") {
+          if (role === "HR") {
             navigate("/hr_dashboard");
-          } else if (role == "Director") {
+          } else if (role === "Director") {
             navigate("/director_dashboard");
           } else {
             navigate("/dashboard");
           }
         }, 3000);
-        setFormData({
-          email: "",
-          password: "",
-        });
+  
+        setFormData({ email: "", password: "" });
+  
       } else {
         toaster.push(
           <Message type="error" closable duration={3000}>
-            Failed to login.
+            {data.message || "Failed to login."}
           </Message>,
           { placement: "topStart" }
         );
       }
+  
     } catch (error) {
       toaster.push(
         <Message type="error" closable duration={3000}>
@@ -95,6 +99,7 @@ function Login() {
       }, 3000);
     }
   };
+  
   return (
     <div
       className="login-form"

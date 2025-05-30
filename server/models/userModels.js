@@ -65,7 +65,7 @@ exports.getTakenLeaves = async (userId, leaveTypeId) => {
   }
 };
 
-exports.getRequestForManager = async (userId) => {
+exports.getRequests = async (userId) => {
   const roleCheckQuery = `SELECT role FROM users WHERE id = ?`;
   const roleResults = await db.query(roleCheckQuery, [userId]);
   const role = roleResults[0][0].role;
@@ -123,13 +123,14 @@ exports.getUserWithEmail = async (email) => {
 
   try {
     const [results] = await db.query(query, [email]);
-    console.log(results);
-    return results;
+
+    return results.length > 0 ? results[0] : null;
   } catch (error) {
-    console.log("error occurred in model", error.message);
-    return null;
+    console.error("Error in getUserWithEmail:", error.message);
+    throw error; 
   }
 };
+
 exports.createUser = async (
   name,
   email,
