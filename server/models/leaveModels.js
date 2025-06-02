@@ -45,14 +45,13 @@ exports.putLeaveRequestForUser = async (
 
   console.log("leaveTypeName:", leaveTypeName);
 
-
   // Determine how many approvals are needed
   let approvalsNeeded = 1;
   console.log("Checking Sick Leave Condition:", leaveTypeName.trim());
 
   if (leaveTypeName.trim() === "Sick Leave") {
     console.log("Inside Sick Leave");
-  
+
     if (dateDifference === 1 && category_leaves_remaining > 0) {
       approvalsNeeded = 0;
       console.log("Auto-approved: 1-day sick leave with remaining balance");
@@ -63,9 +62,7 @@ exports.putLeaveRequestForUser = async (
       approvalsNeeded = 1;
       console.log("Approval required: Not enough balance");
     }
-  }
-  
-  else {
+  } else {
     if (dateDifference > 5) approvalsNeeded = 3;
     else if (dateDifference > 1) approvalsNeeded = 2;
     else if (category_leaves_remaining >= dateDifference) approvalsNeeded = 1;
@@ -177,8 +174,8 @@ exports.updateLeaveCount = async (leaveRequestId) => {
   const [dataResult] = await db.query(dataQuery, [leaveRequestId]);
   const { user_id, leave_type_id, start_date, end_date } = dataResult[0];
 
-  const dateDifference = countWorkingDays(start_date, end_date); // ensure this is not async
-  console.log(dateDifference , 'diff')
+  const dateDifference = countWorkingDays(start_date, end_date);
+  console.log(dateDifference, "diff");
   const updateCategoryCountQuery = `
     UPDATE remaining_leaves
     SET
@@ -212,7 +209,6 @@ exports.updateLeaveCount = async (leaveRequestId) => {
   }
 };
 
-
 exports.cancelLeaveRequest = async (leaveRequestId) => {
   const query = `UPDATE leave_requests 
     SET status = 'Cancelled'
@@ -236,7 +232,6 @@ exports.updateManagerStatus = async (leaveRequestId) => {
   }
 };
 
-
 exports.updateDirectorStatus = async (leaveRequestId) => {
   const query = `UPDATE leave_requests SET director_status = 'Approved' WHERE id = ?`;
   try {
@@ -247,7 +242,6 @@ exports.updateDirectorStatus = async (leaveRequestId) => {
     return { message: "Failed to update" };
   }
 };
-
 
 exports.updateHrStatus = async (leaveRequestId) => {
   const query = `UPDATE leave_requests SET hr_status = 'Approved' WHERE id = ?`;
@@ -263,19 +257,26 @@ const checkAndUpdateOverallStatus = async (leaveRequestId) => {
   const check = `SELECT manager_status, hr_status, director_status FROM leave_requests WHERE id = ?`;
   const [[request]] = await db.query(check, [leaveRequestId]);
 
-  const statuses = [request.manager_status, request.hr_status, request.director_status];
+  const statuses = [
+    request.manager_status,
+    request.hr_status,
+    request.director_status,
+  ];
 
-  const allApprovedOrNull = statuses.every(status => status === "Approved" || status === null);
+  const allApprovedOrNull = statuses.every(
+    (status) => status === "Approved" || status === null
+  );
 
   if (allApprovedOrNull) {
     await exports.updateStatus(leaveRequestId);
     await exports.updateLeaveCount(leaveRequestId);
-    return { message: "All approvals done. Overall status updated to Approved ✅" };
+    return {
+      message: "All approvals done. Overall status updated to Approved ✅",
+    };
   } else {
     return { message: "Other verifications are still pending ⏳" };
   }
 };
-
 
 exports.updateStatus = async (leaveRequestId) => {
   const query = `UPDATE leave_requests 

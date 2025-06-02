@@ -16,7 +16,6 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/leavelist" element={<LeaveList />} />
       <Route path="/readonly_leavelist" element={<Readonly_leavelist />} />
-      <Route path="/hr_dashboard" element={<Hr_dashboard />} />
       <Route path="/director_dashboard" element={<Director_dashboard />} />
       <Route path="/calendar" element={<Calendar />} />
       <Route path="/requests" element={<Requests />} />

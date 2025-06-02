@@ -61,6 +61,7 @@ function Pending_card({ data, refreshKey }) {
   };
   return (
     <div className="leave-request-card-wrapper">
+      
       {data.map((item, index) => {
         return (
           <div className="pending-card-container" key={index}>

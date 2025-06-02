@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import "../../style/login.css";
 import { useToaster, Message, Button } from "rsuite";
 import Background from "../../assets/Background_edited.jpg";
-import { jwtDecode } from "jwt-decode";
 function Login() {
   const navigate = useNavigate();
 
@@ -62,17 +61,10 @@ function Login() {
         const token = data.token;
         localStorage.setItem("token", token);
   
-        const decode = jwtDecode(token);
-        const { role } = decode;
-  
         setTimeout(() => {
-          if (role === "HR") {
-            navigate("/hr_dashboard");
-          } else if (role === "Director") {
-            navigate("/director_dashboard");
-          } else {
+          
             navigate("/dashboard");
-          }
+          
         }, 3000);
   
         setFormData({ email: "", password: "" });

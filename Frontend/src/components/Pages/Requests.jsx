@@ -43,7 +43,12 @@ function Requests() {
     <div className="width requests-container">
       <Side_nav />
       <div className="grid">
-        <Pending_card data={pendingList} refreshKey={handleRefresh} />
+        {pendingList.length>0?(
+          <Pending_card data={pendingList} refreshKey={handleRefresh} />
+
+        ): (<div className="no-requests">
+          No requests found !
+          </div>)}
       </div>
     </div>
   );

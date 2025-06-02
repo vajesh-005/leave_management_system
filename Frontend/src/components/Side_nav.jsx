@@ -75,7 +75,7 @@ function Side_nav() {
         return (
           <>
             <NavItem
-              to={"/hr_dashboard"}
+              to={"/dashboard"}
               label="Dashboard"
               icon={faChartLine}
             ></NavItem>

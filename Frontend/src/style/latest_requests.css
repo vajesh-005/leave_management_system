@@ -7,8 +7,8 @@ body{
     font-size: 20px;
     color: #8E51FF;
     font-weight: 600;
-    margin-left: 25px;
-    margin-top: 25px;
+    margin-left: 25px !important;
+    margin: 10px;
 }
 .pending-section{
     width: auto;
